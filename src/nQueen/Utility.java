@@ -7,8 +7,6 @@ public class Utility {
 	public Utility(String input){
 		init(input);
 		run();
-		
-		
 	}
 	
 	public void init(String input){
@@ -30,7 +28,7 @@ public class Utility {
 	
 	public void run(){
 		long startTime = System.nanoTime();
-		new Backtracking(board);
+		new GeneticAlgorithm(board);
 		long endTime = System.nanoTime();
 		long duration = (long) ((endTime - startTime)/(Math.pow(10, 9)));
 		System.out.println("Time: " + duration);
@@ -39,7 +37,7 @@ public class Utility {
 	}
 	
 	public static void main(String[] args) {
-		new Utility("2 4 6 0 0 0 0 0 0 ");
+		new Utility("0 0 0 0 0 0 0 0");
 	}
 
 }
