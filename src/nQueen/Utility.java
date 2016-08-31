@@ -7,6 +7,8 @@ public class Utility {
 	public Utility(String input){
 		init(input);
 		run();
+		
+		
 	}
 	
 	public void init(String input){
