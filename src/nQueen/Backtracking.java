@@ -11,7 +11,7 @@ public class Backtracking {
 		solutions = new ArrayList<int[]>();
 		
 		backtrack(board);
-		//printSolutions();
+		printSolutions();
 		//printSolutionsBoard();
 	}
 	

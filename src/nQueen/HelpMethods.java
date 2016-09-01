@@ -1,7 +1,10 @@
 package nQueen;
 
+import java.util.Arrays;
+
 public class HelpMethods {
 	
+<<<<<<< .merge_file_tG1G2G
 	public static int[] countConflicts (Board board){
 		int[] diagonalConflicts = HelpMethods.countDiagonalConflicts(board);
 		int[] rowConflicts = HelpMethods.countRowConflicts(board);
@@ -13,6 +16,8 @@ public class HelpMethods {
 		return totalConflicts;
 	}
 	
+=======
+>>>>>>> .merge_file_2eIWT6
 	public static int[] countRowConflicts(Board board){
 		int numberOfRows = board.getSize(); //Lager en variabel for antall rader
 		int[] queenPositions = board.getQueenPosition(); //Gjenbruker kode for dronningposisjoner som allerede er indeksert etter rad
@@ -21,7 +26,6 @@ public class HelpMethods {
 		for(int i = 0 ; i < numberOfRows ; i++) {
 			indexedConflicts[queenPositions[i]-1] +=1;
 		}
-		
 		for(int column = 0 ; column < numberOfRows ; column++) {
 			if (indexedConflicts[column]!=0)
 				indexedConflicts[column] -=1;
@@ -31,9 +35,19 @@ public class HelpMethods {
 		
 	}
 	
+	public static int[] countDiagonalConflicts(Board board){ //denne metoden er helt feil. Fiks denne Sjur
+		int size = board.getSize();
+		int[] queenPositions = board.getQueenPosition();
+		int[] indexedConflicts = new int[size];
+		for (int i = 0; i < indexedConflicts.length; i++) {
+			indexedConflicts[i] = 1;
+		}
+		return indexedConflicts;
+	}
+	
 	public static int[] countColumnConflicts(Board board){
 		int numberOfColumns = board.getSize(); //Lager en variabel for antall kolonner
-		boolean[][] iterateableBoard = board.getBoard(); //MŒ kunne iterere over brettet, sŒ lager en peker som peker pŒ brettet
+		boolean[][] iterateableBoard = board.getBoard(); //M kunne iterere over brettet, s lager en peker som peker p brettet
 		int[] indexedConflicts = new int[numberOfColumns];
 		
 		for(int row = 0 ; row < numberOfColumns ; row++) {
