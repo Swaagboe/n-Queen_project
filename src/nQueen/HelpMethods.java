@@ -2,8 +2,15 @@ package nQueen;
 
 public class HelpMethods {
 	
-	public static countConflicts (Board board){
+	public static int[] countConflicts (Board board){
+		int[] diagonalConflicts = HelpMethods.countDiagonalConflicts(board);
+		int[] rowConflicts = HelpMethods.countRowConflicts(board);
+		int[] totalConflicts = new int[rowConflicts.length +diagonalConflicts.length];
 		
+		System.arraycopy(rowConflicts, 0, totalConflicts, 0, rowConflicts.length);
+		System.arraycopy(diagonalConflicts, 0, totalConflicts, rowConflicts.length, diagonalConflicts.length);
+		
+		return totalConflicts;
 	}
 	
 	public static int[] countRowConflicts(Board board){
@@ -43,6 +50,37 @@ public class HelpMethods {
 		}
 		
 		return indexedConflicts;
+	}
+	
+	public static int[] countDiagonalConflicts(Board board){
+		int numberOfDiagonals = (board.getSize()*2-3)*2;
+		int[] indexedConflicts = new int[numberOfDiagonals];
+		boolean[][] iterateableBoard = board.getBoard();
+		
+		for(int row = 0 ; row < board.getSize(); row++){ //legger til konflikter som ligger i diagonal opp til h¿yre
+			for (int column = 0 ; column < board.getSize() ; column++){
+				if(column+row>0 && column+row<board.getSize()*2 && iterateableBoard[row][column])
+				indexedConflicts[row+column-1]+=1;
+			}
+		}
+		int offset = numberOfDiagonals/2;
+		for(int row = 0 ; row < board.getSize() ; row++){
+			for(int column =0 ; column < board.getSize() ; column++) {
+				int columnIndex = board.getSize() -column - 1;
+				
+				if(columnIndex+row>0 && columnIndex+row<board.getSize()*2-2 && iterateableBoard[row][column])
+				indexedConflicts[offset - 1 + columnIndex+row]++;
+			}
+		}
+		
+		for(int i = 0 ; i < indexedConflicts.length ; i++) {
+			if( indexedConflicts[i] == 1)
+				indexedConflicts[i] = 0;
+		}
+		
+		return indexedConflicts;
+		
+		
 	}
 
 }
