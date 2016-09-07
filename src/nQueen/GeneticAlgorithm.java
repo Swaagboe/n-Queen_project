@@ -28,7 +28,7 @@ public class GeneticAlgorithm {
 				Board b = new Board(sol);			
 				if (b.checkIfLegal()){
 					if (!solutions.contains(sol)){
-						solutions.add(sol);
+						solutions.add(sol.clone());
 					}
 				}
 			}
@@ -87,11 +87,6 @@ public class GeneticAlgorithm {
 		return ret;
 	}
 
-	public int generateRandomNumer(int min, int max){
-		Random rand = new Random();
-		return rand.nextInt((max - min) +1)+min;
-
-	}
 	
 	public int[] generateRandomList(int min, int max){
 		int[] ret = new int[size];
@@ -109,36 +104,18 @@ public class GeneticAlgorithm {
 	public void doFitnessEvaluation(){
 		int[] conflicts = new int[randomSolutions.size()];
 		int i = 0;
+		double sum = 0;
 		for (int[] sol : randomSolutions) {
 			Board b = new Board(sol);
-			int[] rowConflicts = HelpMethods.countRowConflicts(b);
-			int[] diagonalConflicts = HelpMethods.countDiagonalConflicts(b);
-			int countRow = 0;
-			int countDiag = 0;
-			for (int j = 0; j < rowConflicts.length; j++) {
-				countRow += rowConflicts[j];
-			}
-			for (int j = 0; j < diagonalConflicts.length; j++) {
-				countDiag += diagonalConflicts[j];
-			}
-			//System.out.println(b.toString());
-			int count = countRow + countDiag;
-			conflicts[i] = count;
+			conflicts[i] = (int)b.getCurrentHeuristicValue();
+			sum+= conflicts[i];
 			i++;
-		}
-		int sum = 0;
-		for (int j = 0; j < conflicts.length; j++) {
-			sum+= conflicts[j];
 		}
 		double[] fitnessEvaluation = new double[randomSolutions.size()];
 		for (int j = 0; j < fitnessEvaluation.length; j++) {
-			fitnessEvaluation[j] = (double)conflicts[j]/(double)sum;
+			fitnessEvaluation[j] = (double)conflicts[j]/sum;
 		}
-//		int q = 0;
-//		for (int[] sol : randomSolutions) {
-//			System.out.println(Arrays.toString(sol) + " = " + fitnessEvaluation[q]);
-//			q++;
-//		}
+
 		selection(fitnessEvaluation);
 	}
 
@@ -185,10 +162,10 @@ public class GeneticAlgorithm {
 		for (int i = 0; i < newRandomSolution.size(); i+=2) {
 			int[] newQueenPos1 = new int[size];
 			int[] newQueenPos2 = new int[size];
-			int r = generateRandomNumer(1, size);
+			int r = HelpMethods.generateRandomNumer(1, size);
 			boolean check = true;
 			while (check){
-				r = generateRandomNumer(1, size);
+				r = HelpMethods.generateRandomNumer(1, size);
 				//System.out.println("r: " + r);
 				int[] list1 = new int[r];
 				int[] list2 = new int[r];
@@ -232,10 +209,10 @@ public class GeneticAlgorithm {
 
 	public void doMutation(ArrayList<int[]> newRandomSolution){
 		for (int[] is : newRandomSolution) {
-			int c = generateRandomNumer(1, 6);
+			int c = HelpMethods.generateRandomNumer(1, 6);
 			if (c == 2){//doing mutation with a small independent probability
-				int col = generateRandomNumer(0, size-1);
-				int newRow = generateRandomNumer(1, size);
+				int col = HelpMethods.generateRandomNumer(0, size-1);
+				int newRow = HelpMethods.generateRandomNumer(1, size);
 				is[col] = newRow;
 			}
 
