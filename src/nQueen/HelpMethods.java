@@ -7,7 +7,7 @@ public class HelpMethods {
 
 
 	public static int[] countConflicts (Board board){
-		int[] diagonalConflicts = HelpMethods.countDiagonalConflicts(board);
+		int[] diagonalConflicts = HelpMethods.countDiagonalConflictsFast(board.getQueenPositions());
 		int[] rowConflicts = HelpMethods.countRowConflicts(board);
 		int[] totalConflicts = new int[rowConflicts.length +diagonalConflicts.length];
 
@@ -76,6 +76,7 @@ public class HelpMethods {
 		for(int row = 0 ; row < board.getSize() ; row++){
 			for(int column =0 ; column < board.getSize() ; column++) {
 				int columnIndex = board.getSize() -column - 1;
+				//System.out.println((columnIndex));
 
 				if(columnIndex+row>0 && columnIndex+row<board.getSize()*2-2 && iterateableBoard[row][column])
 					indexedConflicts[offset - 1 + columnIndex+row]++;
@@ -87,6 +88,40 @@ public class HelpMethods {
 		}
 
 		return indexedConflicts;
+	}
+	
+	public static int[] countDiagonalConflictsFast(int[] queenPositions) {
+		int numberOfDiagonals = (queenPositions.length*2-2)*2;
+		int[] indexedConflicts = new int[numberOfDiagonals];
+		
+		for(int i = 0 ; i < queenPositions.length ; i++){ //legger inn konflikter i diagonal opp til h¿yre
+			int rowIndex = queenPositions.length - queenPositions[i] - 1;
+			int columnIndex = i;
+			
+			if(rowIndex+columnIndex > 0 && rowIndex + columnIndex < queenPositions.length*2){
+				indexedConflicts[rowIndex+columnIndex]+=1;
+			}
+		}
+		
+		int offset = numberOfDiagonals/2;
+		
+		for(int i = 0 ; i < queenPositions.length ; i++) {
+			int rowIndex = queenPositions.length - queenPositions[i];
+			//System.out.println(rowIndex +"    min metode");
+			int columnIndex = queenPositions.length - i - 1;
+			
+			if(columnIndex + rowIndex > 0 && columnIndex + rowIndex < queenPositions.length*2-2) {
+				indexedConflicts[offset  + rowIndex + columnIndex-1]+=1;
+			}
+			
+		}
+		
+		for(int i = 0 ; i < indexedConflicts.length ; i++) {
+			indexedConflicts[i] -= 1 ;
+		}
+	
+		return indexedConflicts;
+		
 	}
 	
 	public static Board[] createNeighbours(Board board, int numberOfNeighbours) {
@@ -129,5 +164,6 @@ public class HelpMethods {
 		return rand.nextInt((max - min) +1)+min;
 
 	}
+	
 
 }
