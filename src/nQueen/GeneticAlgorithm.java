@@ -22,7 +22,7 @@ public class GeneticAlgorithm {
 		generateNumberOfSolutions();
 		numberOfSol = numberOfSolutionsTable.get(board.getQueenPosition().length);
 		size = board.getQueenPosition().length;
-		while (numberOfSol != solutions.size()) {
+		while (1 != solutions.size()) {
 			randomSolutions = generateRandomSolutions(numberOfSol);
 			for (int[] sol : randomSolutions) {
 				Board b = new Board(sol);			
@@ -52,11 +52,26 @@ public class GeneticAlgorithm {
 		numberOfSolutionsTable.put(8, 92);
 		numberOfSolutionsTable.put(9, 352);
 		numberOfSolutionsTable.put(10, 724);
-		numberOfSolutionsTable.put(11, 2680);
-		numberOfSolutionsTable.put(12, 14200);
-		numberOfSolutionsTable.put(13, 73712);
-		numberOfSolutionsTable.put(14, 365596);
-		numberOfSolutionsTable.put(15, 2279184);
+		numberOfSolutionsTable.put(11, 724);
+		numberOfSolutionsTable.put(12, 724);
+		numberOfSolutionsTable.put(13, 724);
+		numberOfSolutionsTable.put(14, 724);
+		numberOfSolutionsTable.put(15, 724);
+		numberOfSolutionsTable.put(16, 724);
+		numberOfSolutionsTable.put(17, 724);
+		numberOfSolutionsTable.put(18, 724);
+		numberOfSolutionsTable.put(19, 724);
+		numberOfSolutionsTable.put(20, 724);
+		numberOfSolutionsTable.put(21, 724);
+		numberOfSolutionsTable.put(22, 724);
+		numberOfSolutionsTable.put(23, 724);
+		numberOfSolutionsTable.put(24, 724);
+		numberOfSolutionsTable.put(25, 724);
+		numberOfSolutionsTable.put(26, 724);
+		numberOfSolutionsTable.put(27, 724);
+		numberOfSolutionsTable.put(28, 724);
+		numberOfSolutionsTable.put(29, 724);
+		numberOfSolutionsTable.put(30, 724);
 	}
 
 	public ArrayList<int[]> generateRandomSolutions(int numberOfSol){
@@ -100,8 +115,10 @@ public class GeneticAlgorithm {
 			int[] diagonalConflicts = HelpMethods.countDiagonalConflicts(b);
 			int countRow = 0;
 			int countDiag = 0;
-			for (int j = 0; j < diagonalConflicts.length; j++) {
+			for (int j = 0; j < rowConflicts.length; j++) {
 				countRow += rowConflicts[j];
+			}
+			for (int j = 0; j < diagonalConflicts.length; j++) {
 				countDiag += diagonalConflicts[j];
 			}
 			//System.out.println(b.toString());
@@ -215,7 +232,7 @@ public class GeneticAlgorithm {
 
 	public void doMutation(ArrayList<int[]> newRandomSolution){
 		for (int[] is : newRandomSolution) {
-			int c = generateRandomNumer(1, 4);
+			int c = generateRandomNumer(1, 6);
 			if (c == 2){//doing mutation with a small independent probability
 				int col = generateRandomNumer(0, size-1);
 				int newRow = generateRandomNumer(1, size);

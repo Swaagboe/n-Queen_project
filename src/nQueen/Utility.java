@@ -10,9 +10,9 @@ public class Utility {
 		init(input);
 		System.out.println(board.toString());
 		System.out.println(Arrays.toString(board.getQueenPosition()));
-		System.out.println(Arrays.toString(HelpMethods.countRowConflicts(board)));
-		System.out.println(Arrays.toString(HelpMethods.countDiagonalConflicts(board)));
-		System.out.println(Arrays.toString(HelpMethods.countConflicts(board)));
+//		System.out.println(Arrays.toString(HelpMethods.countRowConflicts(board)));
+//		System.out.println(Arrays.toString(HelpMethods.countDiagonalConflicts(board)));
+//		System.out.println(Arrays.toString(HelpMethods.countConflicts(board)));
 		run();
 		
 		
@@ -38,16 +38,16 @@ public class Utility {
 	
 	public void run(){
 		long startTime = System.nanoTime();
-		new Backtracking(board);
+		new TabuSearch(board);
 		long endTime = System.nanoTime();
 		long duration = (long) ((endTime - startTime)/(Math.pow(10, 9)));
-		System.out.println("Time: " + duration);
+		System.out.println("Time to find solution on " + board.getSize() +"x" +board.getSize()+ ": " + duration + " sec");
 		
 		
 	}
 	
 	public static void main(String[] args) {
-		new Utility("2 2 6 6 5 1 3 4 3 ");
+		new Utility("0 0 0 0");
 	}
 
 }

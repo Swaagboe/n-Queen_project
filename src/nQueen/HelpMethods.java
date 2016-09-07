@@ -62,7 +62,7 @@ public class HelpMethods {
 		int[] indexedConflicts = new int[numberOfDiagonals];
 		boolean[][] iterateableBoard = board.getBoard();
 
-		for(int row = 0 ; row < board.getSize(); row++){ //legger til konflikter som ligger i diagonal opp til h¿yre
+		for(int row = 0 ; row < board.getSize(); row++){ //legger til konflikter som ligger i diagonal opp til hoeyre
 			for (int column = 0 ; column < board.getSize() ; column++){
 				if(column+row>0 && column+row<board.getSize()*2 && iterateableBoard[row][column])
 					indexedConflicts[row+column-1]+=1;
