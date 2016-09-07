@@ -10,7 +10,9 @@ public class Utility {
 		init(input);
 		System.out.println(board.toString());
 		System.out.println(Arrays.toString(board.getQueenPosition()));
-		System.out.println(Arrays.toString(HelpMethods.countColumnConflicts(board)));
+		System.out.println(Arrays.toString(HelpMethods.countRowConflicts(board)));
+		System.out.println(Arrays.toString(HelpMethods.countDiagonalConflicts(board)));
+		System.out.println(Arrays.toString(HelpMethods.countConflicts(board)));
 		run();
 		
 		
