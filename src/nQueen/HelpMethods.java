@@ -1,6 +1,7 @@
 package nQueen;
 
 import java.util.Arrays;
+import java.util.Random;
 
 public class HelpMethods {
 
@@ -23,11 +24,14 @@ public class HelpMethods {
 		int[] indexedConflicts = new int[numberOfRows]; //Lager listen som returneres. Indeksert etter rad, og gir antall konflikter i den raden
 
 		for(int i = 0 ; i < numberOfRows ; i++) {
-			indexedConflicts[queenPositions[i]-1] +=1;
+			int rowIndex = board.getSize() - board.getQueenPositions()[i];
+			if(queenPositions[i] != 0){
+				indexedConflicts[rowIndex] +=1;
+			}
 		}
 		for(int column = 0 ; column < numberOfRows ; column++) {
-			if (indexedConflicts[column]!=0)
 				indexedConflicts[column] -=1;
+
 		}
 
 		return indexedConflicts;
@@ -58,7 +62,7 @@ public class HelpMethods {
 	}
 
 	public static int[] countDiagonalConflicts(Board board){
-		int numberOfDiagonals = (board.getSize()*2-3)*2;
+		int numberOfDiagonals = (board.getSize()*2-2)*2;
 		int[] indexedConflicts = new int[numberOfDiagonals];
 		boolean[][] iterateableBoard = board.getBoard();
 
@@ -79,13 +83,45 @@ public class HelpMethods {
 		}
 
 		for(int i = 0 ; i < indexedConflicts.length ; i++) {
-			if( indexedConflicts[i] == 1)
-				indexedConflicts[i] = 0;
+				indexedConflicts[i] -= 1 ;
 		}
 
 		return indexedConflicts;
+	}
+	
+	public static Board[] createNeighbours(Board board, int numberOfNeighbours) {
+		Random random = new Random();
+		Board[] neighbours = new Board[numberOfNeighbours];
+		for(int i = 0 ; i < numberOfNeighbours ; i++) {
+			neighbours[i] = new Board(board.getQueenPositions());
+			
+			int kolonne = random.nextInt(board.getSize());
+			int offset = random.nextInt(board.getSize());
+			int newRow = (neighbours[i].getQueenPositions()[kolonne] + offset) % board.getSize();
+//			System.out.println("\n\n");
+//			System.out.println();
+			//System.out.println(Arrays.toString(neighbours[i].getQueenPositions()));
+			neighbours[i].moveQueen(kolonne, newRow);
+			//System.out.println(Arrays.toString(neighbours[i].getQueenPositions()));
+//			System.out.println(neighbours[i]);
+//			System.out.println("                             \n\n");
+			
+		}
+		return neighbours;
 
-
+		
+	}
+	
+	public static int simpleHeuristic(Board board) {
+		int heuristicValue = 0;
+		int[] conflicts = HelpMethods.countConflicts(board);
+		for(int i = 0 ; i < conflicts.length ; i++){
+			if(conflicts[i] > 0)
+			heuristicValue +=conflicts[i];
+			
+		}
+		
+		return heuristicValue;
 	}
 
 }
