@@ -2,6 +2,7 @@ package nQueen;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 
 public class HelpMethods {
@@ -175,6 +176,20 @@ public class HelpMethods {
 		return list;
 
 
+	}
+	
+	//starter med aa initialisere en loesning, denne har ingen radkonflikter
+	public static int[] initializeBoardWithoutRowConflicts(int size){
+		int[] ret = new int[size];
+		ArrayList<Integer> list = new ArrayList<Integer>();
+        for (int i=1; i<size+1; i++) {
+            list.add(new Integer(i));
+        }
+        Collections.shuffle(list);
+        for (int i=0; i<size; i++) {
+        	ret[i] = list.get(i);
+        }
+        return ret;
 	}
 
 

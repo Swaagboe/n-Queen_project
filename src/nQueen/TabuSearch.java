@@ -1,9 +1,7 @@
 package nQueen;
 
-import java.awt.List;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -20,7 +18,7 @@ public class TabuSearch {
 		solutions = new ArrayList<int[]>();
 		this.size = b.getSize();
 		tabuList = new LinkedList<int[]>();
-		int[] initialSolution = initialSolution(1, size);
+		int[] initialSolution = HelpMethods.initializeBoardWithoutRowConflicts(size);
 		initialiseConflictsBySwap();
 		buildConflictsBySwap(initialSolution);
 		int[] oldSol = swap(initialSolution);
@@ -48,19 +46,7 @@ public class TabuSearch {
 	
 	}
 	
-	public int[] initialSolution(int min, int max){
-		int[] ret = new int[size];
-		ArrayList<Integer> list = new ArrayList<Integer>();
-        for (int i=min; i<max+1; i++) {
-            list.add(new Integer(i));
-        }
-        Collections.shuffle(list);
-        for (int i=0; i<max; i++) {
-        	ret[i] = list.get(i);
-        }
-        return ret;
-	}
-	
+	//initialiserer konfliktmatrisen for naboene
 	public void initialiseConflictsBySwap(){
 		conflictsBySwap = new int[size][size];
 		for (int i = 0; i < size; i++) {
@@ -70,7 +56,7 @@ public class TabuSearch {
 		}
 	}
 	
-	
+	//finner antall konflikter ved aa foreta et dronningbytte med plass i og j
 	public void buildConflictsBySwap(int[] queenPos){
 		for (int i = 0; i < queenPos.length; i++) {
 			for (int j = i+1; j < queenPos.length; j++) {
@@ -87,13 +73,13 @@ public class TabuSearch {
 		}
 	}
 	
+	//lager et nytt board ved aa finne beste nabo
 	public int[] swap(int[] queenPos){
 		int[] swap = findBestSwap(queenPos);
 		int save = queenPos[swap[0]];
 		int[] oldPos = queenPos.clone();
 		queenPos[swap[0]] = queenPos[swap[1]];
 		queenPos[swap[1]] = save;
-//		System.out.println("NEW POSITION: " + Arrays.toString(queenPos));
 		if (tabuList.size() >= maxTabuSize){
 			tabuList.poll();
 			tabuList.add(oldPos);
@@ -101,27 +87,20 @@ public class TabuSearch {
 		else{
 			tabuList.add(oldPos);
 		}
-//		System.out.println("Tabulist: ");
-//		for (int[] list : tabuList) {
-//			System.out.println(Arrays.toString(list));
-//		}
 		return queenPos;
 	}
 	
+	//finner de beste dronningene aa bytte. De som gir fearrrest konflikter. 
 	public int[] findBestSwap(int[] queenPos){
 		int[] ret = new int[2];
 		ret[0] = -1;
 		int best = INF;
-		int[] finalPos = null;
-//		System.out.println("Queenpos: " + Arrays.toString(queenPos));
 		for (int i = 0; i < size; i++) {
 			for (int j = i+1; j < size; j++) {
 				int[] tempPos = queenPos;
 				int valueToChange = tempPos[i];
 				tempPos[i] = tempPos[j];
 				tempPos[j] = valueToChange;
-//				System.out.println("Temp: "+Arrays.toString(tempPos));
-//				System.out.println("Conflicts: " + conflictsBySwap[i][j]);
 				boolean check = false;
 				for (int[] k : tabuList) {
 					if (compareArrays(k, tempPos)){
@@ -133,23 +112,15 @@ public class TabuSearch {
 					best = conflictsBySwap[i][j];
 					ret[0] = i;
 					ret[1] = j;
-					finalPos = tempPos;
-//					System.out.println("Swapped");
 				}
 				tempPos[j] = tempPos[i];
 				tempPos[i] = valueToChange;
 			}
 		}
-//		System.out.println("To be replaced: " + Arrays.toString(ret));
 		return ret;
 	}
 	
-	public boolean isInTabuList(){
-		boolean ret = false;
-		
-		return ret;
-	}
-	
+	//sjekker om en array er lik en annen array
 	public boolean compareArrays(int[] array1, int[] array2) {
         boolean b = true;
         if (array1 != null && array2 != null){
