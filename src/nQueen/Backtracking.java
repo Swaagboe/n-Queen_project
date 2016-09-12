@@ -53,7 +53,7 @@ public class Backtracking {
 	public void printSolutions(){
 		System.out.println("SOLUTIONS:");
 		for (int i = 0; i < solutions.size(); i++) {
-			System.out.println(Arrays.toString(solutions.get(i)));
+			//System.out.println(Arrays.toString(solutions.get(i)));
 		}
 		System.out.println("Number of solutions for " + solutions.get(0).length+"x"+solutions.get(0).length+": "+  + solutions.size());
 	}
