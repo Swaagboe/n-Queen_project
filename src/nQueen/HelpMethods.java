@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Random;
 
 public class HelpMethods {
-
+	
 
 	public static int[] countConflicts (Board board){
 		int[] diagonalConflicts = HelpMethods.countDiagonalConflictsFast(board.getQueenPositions());
@@ -190,6 +190,121 @@ public class HelpMethods {
         	ret[i] = list.get(i);
         }
         return ret;
+	}
+	
+	//sjekker om en array er lik en annen array
+	public static boolean compareArrays(int[] array1, int[] array2) {
+        boolean b = true;
+        if (array1 != null && array2 != null){
+          if (array1.length != array2.length)
+              b = false;
+          else
+              for (int i = 0; i < array2.length; i++) {
+                  if (array2[i] != array1[i]) {
+                      b = false;    
+                  }                 
+            }
+        }else{
+          b = false;
+        }
+        return b;
+    }
+	
+	public static int[] findNewSolutionByRotatingRight(int[] queenPos){
+		int[] ret = new int[queenPos.length];
+		for (int i = 0; i < queenPos.length; i++) {
+			ret[queenPos[i]-1] = queenPos.length-i;
+		}
+		if (new Board(ret).checkIfLegal()){
+			return ret;
+		}
+		else{
+			return null;
+		}
+	}
+	
+	public static ArrayList<int[]> findDuplicateByRotation(ArrayList<int[]> ret){
+		for (int l = 0; l < 2; l++) {
+			int[] newSol = findNewSolutionByRotatingRight(ret.get(l).clone());
+			boolean check = false;
+			for (int i = 0; i < ret.size(); i++) {
+				if (compareArrays(ret.get(i), newSol)){
+					check =true;
+					break;
+				}
+			}
+			if (!check){
+				ret.add(newSol);			
+			}
+			check = false;
+			for (int i = 0; i < 2; i++) {
+				newSol = findNewSolutionByRotatingRight(newSol.clone());
+				for (int j = 0; j < ret.size(); j++) {
+					if (compareArrays(ret.get(j), newSol.clone())){
+						check =true;
+						break;
+					}
+				}
+				if (!check){
+					ret.add(newSol.clone());			
+				}
+			}
+		}
+		return ret;
+	}
+	
+	public static ArrayList<int[]> findDuplicateSolutions(int[] queenPos){
+		ArrayList<int[]> ret = new ArrayList<int[]>();
+		ret.add(queenPos);
+		int[] rotationBoard = findNewSolutionByMirroring(queenPos);
+		ret.add(rotationBoard);
+		ret = findDuplicateByRotation(ret);
+		return ret;
+	}
+	
+	public static int[] findNewSolutionByMirroring(int[] queenPos){
+		int[] ret = new int[queenPos.length];
+		for (int i = 0; i < queenPos.length; i++) {
+			ret[i] = queenPos[queenPos.length-1-i];
+		}
+		if (new Board(ret).checkIfLegal()){
+			return ret;
+		}
+		else{
+			return null;
+		}
+	}
+	
+	public static ArrayList<int[]> addIfNotAlreadyInSolutionSet(int[] insert, ArrayList<int[]> solutions){
+		boolean check = false;
+		for (int j = 0; j < solutions.size(); j++) {
+			if (HelpMethods.compareArrays(solutions.get(j), insert.clone())){
+				check =true;
+				break;
+			}
+		}
+		if (!check){
+			solutions.add(insert.clone());			
+		}
+		return solutions;
+	}
+	
+	public static Integer getNumberOfSolutions(int size){
+		if (size == 4){return 2;}
+		else if (size == 5){return 10;}
+		else if (size == 6){return 4;}
+		else if (size == 7){return 40;}
+		else if (size == 8){return 92;}
+		else if (size == 9){return 352;}
+		else if (size == 10){return 724;}
+		else if (size == 11){return 2680;}
+		else if (size == 12){return 14200;}
+		else if (size == 13){return 73712;}
+		else if (size == 14){return 365596;}
+		else if (size == 15){return 2279184;}
+		else if (size == 16){return 14772512;}
+		else if (size == 17){return 95815104;}
+		else {return 666090624;}
 	}
 
 

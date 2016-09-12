@@ -18,15 +18,22 @@ public class TabuSearch {
 		solutions = new ArrayList<int[]>();
 		this.size = b.getSize();
 		tabuList = new LinkedList<int[]>();
+		int numberOfSolutions = HelpMethods.getNumberOfSolutions(size);
 		int[] initialSolution = HelpMethods.initializeBoardWithoutRowConflicts(size);
 		initialiseConflictsBySwap();
 		buildConflictsBySwap(initialSolution);
 		int[] oldSol = swap(initialSolution);
 		Board board = new Board(oldSol);
 		boolean foundSolution = board.checkIfLegal();
+		if (foundSolution){
+			ArrayList<int[]> rotationSol = HelpMethods.findDuplicateSolutions(oldSol);
+			for (int[] is : rotationSol) {
+				solutions = HelpMethods.addIfNotAlreadyInSolutionSet(is, solutions);
+			}		}
 		int c = 0;
-//		System.out.println("Old sol: " +Arrays.toString(oldSol));
-		while (!foundSolution){
+		long startTime = System.nanoTime();
+		long duration = 1;
+		while (solutions.size()<numberOfSolutions && duration < 10){
 			buildConflictsBySwap(oldSol);
 			int[] newSolution = swap(oldSol);							
 			board = new Board(newSolution);
@@ -35,12 +42,20 @@ public class TabuSearch {
 				c++;
 			}
 			else{
-				solutions.add(newSolution);
+				ArrayList<int[]> rotationSol = HelpMethods.findDuplicateSolutions(oldSol);
+				for (int[] is : rotationSol) {
+					solutions = HelpMethods.addIfNotAlreadyInSolutionSet(is, solutions);
+				}
 			}
 			oldSol = newSolution;
+			long endTime = System.nanoTime();
+			duration = (long) ((endTime - startTime)/(Math.pow(10, 9)));
 		}
 		System.out.println(board.toString());
-		System.out.println(Arrays.toString(oldSol));
+		System.out.println("SOLUTIONS:");
+		for (int[] is : solutions) {
+			System.out.println(Arrays.toString(is));
+		}
 		System.out.println("Number of solutions for " + size + "x" + size + ": " + solutions.size());
 		System.out.println("Number of iterations: " + c);
 	
@@ -103,7 +118,7 @@ public class TabuSearch {
 				tempPos[j] = valueToChange;
 				boolean check = false;
 				for (int[] k : tabuList) {
-					if (compareArrays(k, tempPos)){
+					if (HelpMethods.compareArrays(k, tempPos)){
 						check = true;
 						break;
 					}
@@ -120,22 +135,4 @@ public class TabuSearch {
 		return ret;
 	}
 	
-	//sjekker om en array er lik en annen array
-	public boolean compareArrays(int[] array1, int[] array2) {
-        boolean b = true;
-        if (array1 != null && array2 != null){
-          if (array1.length != array2.length)
-              b = false;
-          else
-              for (int i = 0; i < array2.length; i++) {
-                  if (array2[i] != array1[i]) {
-                      b = false;    
-                  }                 
-            }
-        }else{
-          b = false;
-        }
-        return b;
-    }
-
 }

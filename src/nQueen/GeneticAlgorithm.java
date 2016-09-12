@@ -27,18 +27,22 @@ public class GeneticAlgorithm {
 		size = board.getQueenPosition().length;
 		randomSolutions = generateRandomSolutions(numberOfSol);
 		int iterations = 0;
-		while (solutions.size() < 1) {
+		long startTime = System.nanoTime();
+		long duration = 1;
+		while (solutions.size() < HelpMethods.getNumberOfSolutions(size) && duration <60) {
 			for (int[] sol : randomSolutions) {
 				Board b = new Board(sol);
 				if (b.checkIfLegal()){
-					if (!solutions.contains(sol)){
-						solutions.add(sol.clone());
+					ArrayList<int[]> rotationSol = HelpMethods.findDuplicateSolutions(sol);
+					for (int[] is : rotationSol) {
+						solutions = HelpMethods.addIfNotAlreadyInSolutionSet(is, solutions);
 					}
 				}
 			}
 			iterations++;
-			doFitnessEvaluation();	
-			
+			doFitnessEvaluation();
+			long endTime = System.nanoTime();
+			duration = (long) ((endTime - startTime)/(Math.pow(10, 9)));
 		}
 		for (int[] sol : solutions) {
 			System.out.println(Arrays.toString(sol));

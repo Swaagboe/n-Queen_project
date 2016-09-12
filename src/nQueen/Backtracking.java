@@ -8,7 +8,6 @@ public class Backtracking {
 	
 	public Backtracking(Board board){
 		solutions = new ArrayList<int[]>();
-		
 		backtrack(board);
 		printSolutions();
 		//printSolutionsBoard();
