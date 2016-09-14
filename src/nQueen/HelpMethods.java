@@ -130,17 +130,9 @@ public class HelpMethods {
 		Board[] neighbours = new Board[numberOfNeighbours];
 		for(int i = 0 ; i < numberOfNeighbours ; i++) {
 			neighbours[i] = new Board(board.getQueenPositions());
-
-			int kolonne = random.nextInt(board.getSize());
-			int offset = random.nextInt(board.getSize());
-			int newRow = (neighbours[i].getQueenPositions()[kolonne] + offset) % board.getSize();
-			//			System.out.println("\n\n");
-			//			System.out.println();
-			//System.out.println(Arrays.toString(neighbours[i].getQueenPositions()));
-			neighbours[i].moveQueen(kolonne, newRow);
-			//System.out.println(Arrays.toString(neighbours[i].getQueenPositions()));
-			//			System.out.println(neighbours[i]);
-			//			System.out.println("                             \n\n");
+			HelpMethods.switchTwoQueensAtRandom(neighbours[i].getQueenPositions());
+			neighbours[i].updateConflicts();
+			neighbours[i].updateHeuristicValue();
 
 		}
 		return neighbours;
@@ -166,7 +158,7 @@ public class HelpMethods {
 
 	}
 
-	public static int[] switchToQueenRandom(int[] list){
+	public static int[] switchTwoQueensAtRandom(int[] list){
 		int pos1 = HelpMethods.generateRandomNumer(0, list.length-1);
 		int pos2 = HelpMethods.generateRandomNumer(0, list.length-1);
 		int save = list[pos1];

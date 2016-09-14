@@ -2,6 +2,7 @@ package nQueen;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 
 public class Board {
@@ -12,6 +13,7 @@ public class Board {
 	private int[] queenPositions;
 	private double currentHeuristicValue;
 	private int[] conflicts;
+
 
 	
 	public double getCurrentHeuristicValue() {
@@ -24,7 +26,6 @@ public class Board {
 
 	public Board(int[] queenPositions){
 		this.queenPositions = queenPositions.clone();
-		
 		this.size = queenPositions.length;
 		board = new boolean[size][size];
 		for (int i = 0; i < size; i++) {
@@ -134,6 +135,13 @@ public class Board {
 		this.queenPositions[column] = 0;
 	}
 
+	public void updateConflicts() {
+		this.conflicts = HelpMethods.countConflicts(this);
+	}
+	
+	public void updateHeuristicValue(){
+		this.currentHeuristicValue = HelpMethods.simpleHeuristic(this);
+	}
 	
 	public String toString(){
 		String s = "  ";

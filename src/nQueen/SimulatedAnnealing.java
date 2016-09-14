@@ -8,14 +8,13 @@ import java.util.Random;
 public class SimulatedAnnealing {
 	private double temperature;
 	public Board currentSolution;
-	private int maximumConflicts;
 	private double dT;
 	private Board bestSolution;
 	private Board[] solutions;
 	public double bestSolutionHeuristic;
 	private Random random;
 	private int numberOfNeighbours;
-	private double currentSolutionHeuristic;
+
 	
 
 	public SimulatedAnnealing(double initialTemp, double dT,Board initialBoard, int numberOfNeighbours) {
@@ -26,7 +25,6 @@ public class SimulatedAnnealing {
 		bestSolution = new Board(initialBoard.getQueenPositions());
 		bestSolutionHeuristic = currentSolution.getCurrentHeuristicValue();
 		System.out.println(bestSolutionHeuristic);
-		currentSolutionHeuristic = currentSolution.getCurrentHeuristicValue();
 		this.numberOfNeighbours = numberOfNeighbours;
 		}
 	
@@ -88,13 +86,13 @@ public class SimulatedAnnealing {
 	}
 	
 	public static void main(String[] args) {
-		int[] brett = new int[20];
-		for(int i = 0 ; i < 20 ; i++) {
+		int[] brett = new int[30];
+		for(int i = 0 ; i < 30 ; i++) {
 			brett[i] = i+1;
 		}
 		
 		
-		SimulatedAnnealing test = new SimulatedAnnealing(1000, 0.001, new Board(brett), 10);
+		SimulatedAnnealing test = new SimulatedAnnealing(1000, 0.0005, new Board(brett), 10);
 		long startTime = System.nanoTime();
 		Board l¿sning = test.run();
 		long endTime = System.nanoTime();
