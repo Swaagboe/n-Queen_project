@@ -1,6 +1,5 @@
 package nQueen;
 
-import java.awt.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -19,42 +18,50 @@ public class TabuSearch {
 		solutions = new ArrayList<int[]>();
 		this.size = b.getSize();
 		tabuList = new LinkedList<int[]>();
-		int[] initialSolution = initialSolution();
+		int numberOfSolutions = HelpMethods.getNumberOfSolutions(size);
+		int[] initialSolution = HelpMethods.initializeBoardWithoutRowConflicts(size);
 		initialiseConflictsBySwap();
 		buildConflictsBySwap(initialSolution);
 		int[] oldSol = swap(initialSolution);
 		Board board = new Board(oldSol);
 		boolean foundSolution = board.checkIfLegal();
+		if (foundSolution){
+			ArrayList<int[]> rotationSol = HelpMethods.findDuplicateSolutions(oldSol);
+			for (int[] is : rotationSol) {
+				solutions = HelpMethods.addIfNotAlreadyInSolutionSet(is, solutions);
+			}		}
 		int c = 0;
-		while (!foundSolution){
-			int[] newSolution = swap(oldSol);
-			buildConflictsBySwap(newSolution);
-			newSolution = swap(newSolution);							
+		long startTime = System.nanoTime();
+		long duration = 1;
+		while (solutions.size()<numberOfSolutions && duration < 10){
+			buildConflictsBySwap(oldSol);
+			int[] newSolution = swap(oldSol);							
 			board = new Board(newSolution);
 			foundSolution = board.checkIfLegal();
 			if (!foundSolution){
-				
-				c = 0;
+				c++;
 			}
 			else{
-				c++;
-				System.out.println(c);
+				ArrayList<int[]> rotationSol = HelpMethods.findDuplicateSolutions(oldSol);
+				for (int[] is : rotationSol) {
+					solutions = HelpMethods.addIfNotAlreadyInSolutionSet(is, solutions);
+				}
 			}
 			oldSol = newSolution;
+			long endTime = System.nanoTime();
+			duration = (long) ((endTime - startTime)/(Math.pow(10, 9)));
 		}
 		System.out.println(board.toString());
-		System.out.println(Arrays.toString(oldSol));
-	
-	}
-	
-	public int[] initialSolution(){
-		int[] ret = new int[size];
-		for (int i = 0; i < ret.length; i++) {
-			ret[i] = i+1;
+		System.out.println("SOLUTIONS:");
+		for (int[] is : solutions) {
+			System.out.println(Arrays.toString(is));
 		}
-		return ret;
+		System.out.println("Number of solutions for " + size + "x" + size + ": " + solutions.size());
+		System.out.println("Number of iterations: " + c);
+	
 	}
 	
+	//initialiserer konfliktmatrisen for naboene
 	public void initialiseConflictsBySwap(){
 		conflictsBySwap = new int[size][size];
 		for (int i = 0; i < size; i++) {
@@ -64,7 +71,7 @@ public class TabuSearch {
 		}
 	}
 	
-	
+	//finner antall konflikter ved aa foreta et dronningbytte med plass i og j
 	public void buildConflictsBySwap(int[] queenPos){
 		for (int i = 0; i < queenPos.length; i++) {
 			for (int j = i+1; j < queenPos.length; j++) {
@@ -73,85 +80,59 @@ public class TabuSearch {
 				tempPos[i] = tempPos[j];
 				tempPos[j] = valueToChange;
 				Board b = new Board(tempPos);
-				int[] rowConflicts = HelpMethods.countRowConflicts(b);
-				int[] diagConflicts = HelpMethods.countDiagonalConflicts(b);
+				int conflicts = (int)b.getCurrentHeuristicValue();
 				tempPos[j] = tempPos[i];
 				tempPos[i] = valueToChange;
-				int countRow = 0;
-				int countDiag = 0;				
-				for (int k = 0; k < rowConflicts.length; k++) {
-					countRow += rowConflicts[j];
-				}
-				for (int k = 0; k < diagConflicts.length; k++) {
-					countDiag += diagConflicts[k];
-				}
-				conflictsBySwap[i][j] = countRow + countDiag;
+				conflictsBySwap[i][j] = conflicts;
 			}
 		}
 	}
 	
+	//lager et nytt board ved aa finne beste nabo
 	public int[] swap(int[] queenPos){
 		int[] swap = findBestSwap(queenPos);
 		int save = queenPos[swap[0]];
+		int[] oldPos = queenPos.clone();
 		queenPos[swap[0]] = queenPos[swap[1]];
 		queenPos[swap[1]] = save;
-		System.out.println("NEW POSITION: " + Arrays.toString(queenPos));
 		if (tabuList.size() >= maxTabuSize){
 			tabuList.poll();
-			tabuList.add(queenPos);
+			tabuList.add(oldPos);
 		}
 		else{
-			tabuList.add(queenPos);
-		}
-		System.out.println("Tabulist: ");
-		for (int[] list : tabuList) {
-			System.out.println(Arrays.toString(list));
+			tabuList.add(oldPos);
 		}
 		return queenPos;
 	}
 	
+	//finner de beste dronningene aa bytte. De som gir fearrrest konflikter. 
 	public int[] findBestSwap(int[] queenPos){
 		int[] ret = new int[2];
 		ret[0] = -1;
 		int best = INF;
-		int[] finalPos = null;
-		System.out.println("Queenpos: " + Arrays.toString(queenPos));
 		for (int i = 0; i < size; i++) {
 			for (int j = i+1; j < size; j++) {
 				int[] tempPos = queenPos;
 				int valueToChange = tempPos[i];
 				tempPos[i] = tempPos[j];
 				tempPos[j] = valueToChange;
-				System.out.println("Temp: "+Arrays.toString(tempPos));
-				System.out.println("Conflicts: " + conflictsBySwap[i][j]);
-				if (conflictsBySwap[i][j] < best && !tabuList.contains(tempPos)){
+				boolean check = false;
+				for (int[] k : tabuList) {
+					if (HelpMethods.compareArrays(k, tempPos)){
+						check = true;
+						break;
+					}
+				}
+				if (conflictsBySwap[i][j] < best && !check){
 					best = conflictsBySwap[i][j];
 					ret[0] = i;
 					ret[1] = j;
-					finalPos = tempPos;
-					System.out.println("Swapped");
 				}
+				tempPos[j] = tempPos[i];
+				tempPos[i] = valueToChange;
 			}
 		}
-//		if (tabuList.size() >= maxTabuSize){
-//			tabuList.poll();
-//			tabuList.add(finalPos);
-//		}
-//		else{
-//			tabuList.add(finalPos);
-//		}
-//		System.out.println("Tabulist: ");
-//		for (int[] list : tabuList) {
-//			System.out.println(Arrays.toString(list));
-//		}
-		System.out.println("To be replaced: " + Arrays.toString(ret));
 		return ret;
 	}
 	
-	public boolean isInTabuList(){
-		boolean ret = false;
-		
-		return ret;
-	}
-
 }
