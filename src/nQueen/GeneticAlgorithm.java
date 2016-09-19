@@ -23,7 +23,7 @@ public class GeneticAlgorithm {
 		this.mutationRate = mutationRate;
 		solutions = new ArrayList<int[]>();
 		ranking = new HashMap<Integer, int[]>();
-		numberOfSol = 100;
+		numberOfSol = 650;
 		System.out.println(board);
 		size = board.getQueenPosition().length;
 		randomSolutions = generateRandomSolutions(numberOfSol, board.getQueenPositions());
@@ -83,7 +83,7 @@ public class GeneticAlgorithm {
 	public void selection(double[] fitnessEvaluation){
 		int length = 0;
 		ArrayList<int[]> newRandomSolution = new ArrayList<int[]>();
-		length = randomSolutions.size()/20;
+		length = randomSolutions.size()/50;
 		int c = 0;
 		for (int j = 0; j < length; j++) {
 			double best = 1;
@@ -98,7 +98,7 @@ public class GeneticAlgorithm {
 			ranking.put(c, randomSolutions.get(bestPosition));
 			c++;
 		}
-		for (int j = 0; j < 10; j++) {
+		for (int j = 0; j < 25; j++) {
 			//Legger til de 50% beste fra randomSolutions
 			for (int i = 0; i < ranking.size(); i++) {
 				newRandomSolution.add(ranking.get(i));
@@ -109,15 +109,6 @@ public class GeneticAlgorithm {
 				newRandomSolution.add(ranking.get(ranking.size()-1));
 			}			
 		}
-		for (int i = 0; i < fitnessEvaluation.length; i++) {
-			for (int j = 0; j < fitnessEvaluation.length; j++) {
-				if (i == j){
-					continue;
-				}
-				
-			}
-		}
-		//System.out.println(newRandomSolution);
 		doCrossover(newRandomSolution);
 	}
 

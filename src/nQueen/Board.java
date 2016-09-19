@@ -54,6 +54,7 @@ public class Board {
 					add = true;
 					break;
 				}
+				
 			}
 			if (!add){
 				possibleNumbers.add(i+1);

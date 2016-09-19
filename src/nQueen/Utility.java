@@ -37,7 +37,7 @@ public class Utility {
 	
 	public void run(){
 		long startTime = System.nanoTime();
-		new GeneticAlgorithm(board, 92);
+		new Backtracking(board);
 		long endTime = System.nanoTime();
 		long duration = (long) ((endTime - startTime)/(Math.pow(10, 9)));
 		System.out.println("Time: " + duration + " sec");
@@ -47,7 +47,7 @@ public class Utility {
 	
 	public static void main(String[] args) {
 		//new Utility("17 29 22 6 12 28 21 3 24 10 9 5 2 15 8 14 26 23 7 19 27 25 1 16 11 30 18 4 13 20");
-		new Utility("1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20");
+		new Utility("2 4 0 0 0 0");
 	}
 
 }
