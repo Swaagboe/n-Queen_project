@@ -127,7 +127,6 @@ public class HelpMethods {
 	}
 
 	public static Board[] createNeighbours(Board board, int numberOfNeighbours) {
-		Random random = new Random();
 		Board[] neighbours = new Board[numberOfNeighbours];
 		for(int i = 0 ; i < numberOfNeighbours ; i++) {
 			neighbours[i] = new Board(board.getQueenPositions());
