@@ -13,6 +13,7 @@ public class Board {
 	private int[] queenPositions;
 	private double currentHeuristicValue;
 	private int[] conflicts;
+	private ArrayList<Integer> possibleNumbers;
 
 
 	
@@ -38,10 +39,34 @@ public class Board {
 				board[i][j] = r;
 			}
 		}
-		
+		buildPossibleNumbers();
 		
 		this.conflicts = HelpMethods.countConflicts(this);
 		currentHeuristicValue = HelpMethods.simpleHeuristic(this);
+	}
+	
+	public void buildPossibleNumbers(){
+		possibleNumbers = new ArrayList<Integer>();
+		for (int i = 0; i < size; i++) {
+			boolean add = false;
+			for (int j = 0; j < size; j++) {
+				if (board[i][j]){
+					add = true;
+					break;
+				}
+			}
+			if (!add){
+				possibleNumbers.add(i+1);
+			}
+		}
+	}
+	
+	public ArrayList<Integer> getPossibleNumbers(){
+		return possibleNumbers;
+	}
+	
+	public void removePossibleNumbers(int i){
+		possibleNumbers.remove(i);
 	}
 	
 	public int[] getConflicts() {

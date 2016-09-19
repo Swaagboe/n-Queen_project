@@ -20,6 +20,8 @@ public class TabuSearch {
 		tabuList = new LinkedList<int[]>();
 		int numberOfSolutions = HelpMethods.getNumberOfSolutions(size);
 		int[] initialSolution = HelpMethods.initializeBoardWithoutRowConflicts(size);
+		initialSolution = b.getQueenPositions();
+		System.out.println(Arrays.toString(initialSolution));
 		initialiseConflictsBySwap();
 		buildConflictsBySwap(initialSolution);
 		int[] oldSol = swap(initialSolution);
