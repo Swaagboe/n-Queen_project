@@ -8,8 +8,8 @@ public class Utility {
 	
 	public Utility(String input){
 		init(input);
-		System.out.println(board.toString());
-		System.out.println(Arrays.toString(board.getQueenPosition()));
+//		System.out.println(board.toString());
+//		System.out.println(Arrays.toString(board.getQueenPosition()));
 //		System.out.println(Arrays.toString(HelpMethods.countRowConflicts(board)));
 //		System.out.println(Arrays.toString(HelpMethods.countDiagonalConflicts(board)));
 //		System.out.println(Arrays.toString(HelpMethods.countConflicts(board)));
@@ -41,13 +41,13 @@ public class Utility {
 		new TabuSearch(board);
 		long endTime = System.nanoTime();
 		long duration = (long) ((endTime - startTime)/(Math.pow(10, 9)));
-		System.out.println("Time to find solution on " + board.getSize() +"x" +board.getSize()+ ": " + duration + " sec");
+		System.out.println("Time: " + duration + " sec");
 		
 		
 	}
 	
 	public static void main(String[] args) {
-		new Utility("0 0 0 0");
+		new Utility("0 0 0 0 0 0 0 0 0 0 0 0 0 0");
 	}
 
 }

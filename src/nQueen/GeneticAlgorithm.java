@@ -29,7 +29,7 @@ public class GeneticAlgorithm {
 		int iterations = 0;
 		long startTime = System.nanoTime();
 		long duration = 1;
-		while (solutions.size() < HelpMethods.getNumberOfSolutions(size) && duration <60) {
+		while (solutions.size() < HelpMethods.getNumberOfSolutions(size) && duration <10) {
 			for (int[] sol : randomSolutions) {
 				Board b = new Board(sol);
 				if (b.checkIfLegal()){
@@ -54,24 +54,10 @@ public class GeneticAlgorithm {
 	public ArrayList<int[]> generateRandomSolutions(int numberOfSol){
 		ArrayList<int[]> ret = new ArrayList<int[]>();
 		for (int i = 0; i < numberOfSol; i++) {
-			int[] randomSol = generateRandomList(1, size);
+			int[] randomSol = HelpMethods.initializeBoardWithoutRowConflicts(size);
 			ret.add(randomSol);
 		}
 		return ret;
-	}
-
-	
-	public int[] generateRandomList(int min, int max){
-		int[] ret = new int[size];
-		ArrayList<Integer> list = new ArrayList<Integer>();
-        for (int i=min; i<max+1; i++) {
-            list.add(new Integer(i));
-        }
-        Collections.shuffle(list);
-        for (int i=0; i<max; i++) {
-        	ret[i] = list.get(i);
-        }
-        return ret;
 	}
 
 	public void doFitnessEvaluation(){
@@ -91,7 +77,6 @@ public class GeneticAlgorithm {
 
 		selection(fitnessEvaluation);
 	}
-
 
 
 	public void selection(double[] fitnessEvaluation){

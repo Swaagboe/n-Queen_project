@@ -267,6 +267,7 @@ public class HelpMethods {
 		}
 	}
 	
+	//sjekker om denne loesningen allerede finnes i solutions
 	public static ArrayList<int[]> addIfNotAlreadyInSolutionSet(int[] insert, ArrayList<int[]> solutions){
 		boolean check = false;
 		for (int j = 0; j < solutions.size(); j++) {

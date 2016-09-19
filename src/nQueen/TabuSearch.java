@@ -6,14 +6,14 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class TabuSearch {
-	
+
 	private ArrayList<int[]> solutions;
 	private int size;
 	private final int INF = Integer.MAX_VALUE;
 	private int maxTabuSize = 1000;
 	private Queue<int[]> tabuList;
 	private int[][] conflictsBySwap;
-	
+
 	public TabuSearch(Board b){
 		solutions = new ArrayList<int[]>();
 		this.size = b.getSize();
@@ -29,7 +29,8 @@ public class TabuSearch {
 			ArrayList<int[]> rotationSol = HelpMethods.findDuplicateSolutions(oldSol);
 			for (int[] is : rotationSol) {
 				solutions = HelpMethods.addIfNotAlreadyInSolutionSet(is, solutions);
-			}		}
+			}		
+		}
 		int c = 0;
 		long startTime = System.nanoTime();
 		long duration = 1;
@@ -58,9 +59,9 @@ public class TabuSearch {
 		}
 		System.out.println("Number of solutions for " + size + "x" + size + ": " + solutions.size());
 		System.out.println("Number of iterations: " + c);
-	
+
 	}
-	
+
 	//initialiserer konfliktmatrisen for naboene
 	public void initialiseConflictsBySwap(){
 		conflictsBySwap = new int[size][size];
@@ -70,24 +71,22 @@ public class TabuSearch {
 			}
 		}
 	}
-	
+
 	//finner antall konflikter ved aa foreta et dronningbytte med plass i og j
 	public void buildConflictsBySwap(int[] queenPos){
 		for (int i = 0; i < queenPos.length; i++) {
 			for (int j = i+1; j < queenPos.length; j++) {
-				int[] tempPos = queenPos;
+				int[] tempPos = queenPos.clone();
 				int valueToChange = tempPos[i];
 				tempPos[i] = tempPos[j];
 				tempPos[j] = valueToChange;
 				Board b = new Board(tempPos);
 				int conflicts = (int)b.getCurrentHeuristicValue();
-				tempPos[j] = tempPos[i];
-				tempPos[i] = valueToChange;
 				conflictsBySwap[i][j] = conflicts;
 			}
 		}
 	}
-	
+
 	//lager et nytt board ved aa finne beste nabo
 	public int[] swap(int[] queenPos){
 		int[] swap = findBestSwap(queenPos);
@@ -104,7 +103,7 @@ public class TabuSearch {
 		}
 		return queenPos;
 	}
-	
+
 	//finner de beste dronningene aa bytte. De som gir fearrrest konflikter. 
 	public int[] findBestSwap(int[] queenPos){
 		int[] ret = new int[2];
@@ -112,7 +111,7 @@ public class TabuSearch {
 		int best = INF;
 		for (int i = 0; i < size; i++) {
 			for (int j = i+1; j < size; j++) {
-				int[] tempPos = queenPos;
+				int[] tempPos = queenPos.clone();
 				int valueToChange = tempPos[i];
 				tempPos[i] = tempPos[j];
 				tempPos[j] = valueToChange;
@@ -128,11 +127,9 @@ public class TabuSearch {
 					ret[0] = i;
 					ret[1] = j;
 				}
-				tempPos[j] = tempPos[i];
-				tempPos[i] = valueToChange;
 			}
 		}
 		return ret;
 	}
-	
+
 }
