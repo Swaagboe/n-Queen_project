@@ -100,7 +100,7 @@ public class HelpMethods {
 			int rowIndex = queenPositions.length - queenPositions[i] - 1;
 			int columnIndex = i;
 
-			if(rowIndex+columnIndex > 0 && rowIndex + columnIndex < queenPositions.length*2){
+			if(rowIndex+columnIndex > 0 && rowIndex + columnIndex < queenPositions.length*2 && queenPositions[i]!=0){
 				indexedConflicts[rowIndex+columnIndex]+=1;
 			}
 		}
@@ -112,7 +112,7 @@ public class HelpMethods {
 			//System.out.println(rowIndex +"    min metode");
 			int columnIndex = queenPositions.length - i - 1;
 
-			if(columnIndex + rowIndex > 0 && columnIndex + rowIndex < queenPositions.length*2-2) {
+			if(columnIndex + rowIndex > 0 && columnIndex + rowIndex < queenPositions.length*2-2 && queenPositions[i]!=0) {
 				indexedConflicts[offset  + rowIndex + columnIndex-1]+=1;
 			}
 
