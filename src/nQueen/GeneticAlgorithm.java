@@ -2,34 +2,35 @@ package nQueen;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 
 public class GeneticAlgorithm {
 
 	private ArrayList<int[]> randomSolutions;
 	private ArrayList<int[]> solutions;
-	private HashMap<Integer, Integer> numberOfSolutionsTable;
 	private HashMap<Integer, int[]> ranking;
-	private final double INF = Double.MAX_VALUE;
+	private final int INF = Integer.MAX_VALUE;
 	private int numberOfSol;
 	private int size;
 	private int mutationRate;
+	private int[][] conflictsBySwap;
+	private ArrayList<int[]> alreadyInPopulation;
+
 
 	public GeneticAlgorithm(Board board, int mutationRate){
 		randomSolutions = new ArrayList<int[]>();
+		alreadyInPopulation = new ArrayList<int[]>();
 		this.mutationRate = mutationRate;
 		solutions = new ArrayList<int[]>();
-		numberOfSolutionsTable = new HashMap<Integer, Integer>();
 		ranking = new HashMap<Integer, int[]>();
-//		numberOfSol = numberOfSolutionsTable.get(board.getQueenPosition().length);
 		numberOfSol = 100;
+		System.out.println(board);
 		size = board.getQueenPosition().length;
-		randomSolutions = generateRandomSolutions(numberOfSol);
+		randomSolutions = generateRandomSolutions(numberOfSol, board.getQueenPositions());
 		int iterations = 0;
 		long startTime = System.nanoTime();
 		long duration = 1;
-		while (solutions.size() < HelpMethods.getNumberOfSolutions(size) && duration <60) {
+		while (solutions.size() < HelpMethods.getNumberOfSolutions(size) && duration <10) {
 			for (int[] sol : randomSolutions) {
 				Board b = new Board(sol);
 				if (b.checkIfLegal()){
@@ -39,10 +40,10 @@ public class GeneticAlgorithm {
 					}
 				}
 			}
-			iterations++;
-			doFitnessEvaluation();
 			long endTime = System.nanoTime();
 			duration = (long) ((endTime - startTime)/(Math.pow(10, 9)));
+			iterations++;
+			doFitnessEvaluation();
 		}
 		for (int[] sol : solutions) {
 			System.out.println(Arrays.toString(sol));
@@ -51,27 +52,14 @@ public class GeneticAlgorithm {
 		System.out.println("Number of iterations: " + iterations);
 	}
 
-	public ArrayList<int[]> generateRandomSolutions(int numberOfSol){
+	public ArrayList<int[]> generateRandomSolutions(int numberOfSol, int[] initial){
 		ArrayList<int[]> ret = new ArrayList<int[]>();
-		for (int i = 0; i < numberOfSol; i++) {
-			int[] randomSol = generateRandomList(1, size);
+		ret.add(initial);
+		for (int i = 0; i < numberOfSol-1; i++) {
+			int[] randomSol = HelpMethods.initializeBoardWithoutRowConflicts(size);
 			ret.add(randomSol);
 		}
 		return ret;
-	}
-
-	
-	public int[] generateRandomList(int min, int max){
-		int[] ret = new int[size];
-		ArrayList<Integer> list = new ArrayList<Integer>();
-        for (int i=min; i<max+1; i++) {
-            list.add(new Integer(i));
-        }
-        Collections.shuffle(list);
-        for (int i=0; i<max; i++) {
-        	ret[i] = list.get(i);
-        }
-        return ret;
 	}
 
 	public void doFitnessEvaluation(){
@@ -88,17 +76,14 @@ public class GeneticAlgorithm {
 		for (int j = 0; j < fitnessEvaluation.length; j++) {
 			fitnessEvaluation[j] = (double)conflicts[j]/sum;
 		}
-
 		selection(fitnessEvaluation);
 	}
-
 
 
 	public void selection(double[] fitnessEvaluation){
 		int length = 0;
 		ArrayList<int[]> newRandomSolution = new ArrayList<int[]>();
-		//Setter length til 20 og velger da ut bare de 20 beste brettene.
-		length = randomSolutions.size()/2;
+		length = randomSolutions.size()/20;
 		int c = 0;
 		for (int j = 0; j < length; j++) {
 			double best = 1;
@@ -113,20 +98,30 @@ public class GeneticAlgorithm {
 			ranking.put(c, randomSolutions.get(bestPosition));
 			c++;
 		}
-		//Legger til de 50% beste fra randomSolutions
-		for (int i = 0; i < ranking.size(); i++) {
-			newRandomSolution.add(ranking.get(i));
+		for (int j = 0; j < 10; j++) {
+			//Legger til de 50% beste fra randomSolutions
+			for (int i = 0; i < ranking.size(); i++) {
+				newRandomSolution.add(ranking.get(i));
+			}
+			//Legger til de 50% beste fra randomSolutions men denne gang slik: 1st, 20th, 2nd, 19th, 3rd, 18th, ...
+			for (int i = 0; i < ranking.size()/2; i++) {
+				newRandomSolution.add(ranking.get(i));
+				newRandomSolution.add(ranking.get(ranking.size()-1));
+			}			
 		}
-		//Legger til de 50% beste fra randomSolutions men denne gang slik: 1st, 20th, 2nd, 19th, 3rd, 18th, ...
-		for (int i = 0; i < ranking.size()/2; i++) {
-			newRandomSolution.add(ranking.get(i));
-			newRandomSolution.add(ranking.get(ranking.size()-1));
+		for (int i = 0; i < fitnessEvaluation.length; i++) {
+			for (int j = 0; j < fitnessEvaluation.length; j++) {
+				if (i == j){
+					continue;
+				}
+				
+			}
 		}
 		//System.out.println(newRandomSolution);
-		doCrossover2(newRandomSolution);
+		doCrossover(newRandomSolution);
 	}
-	
-	public void doCrossover2(ArrayList<int[]> newRandomSolution){
+
+	public void doCrossover(ArrayList<int[]> newRandomSolution){
 		int a;
 		if (size%2 == 1){
 			a = (size/2+1);
@@ -182,17 +177,19 @@ public class GeneticAlgorithm {
 				break;
 			}
 			int a = HelpMethods.generateRandomNumer(1, 100);
-			if (a > mutationRate){//doing mutation with a small independent probability
+			if (a > mutationRate && b.getCurrentHeuristicValue() != 0){//doing mutation with a small independent probability
 				int pos1 = HelpMethods.generateRandomNumer(0, size-1);
 				int pos2 = HelpMethods.generateRandomNumer(0, size-1);
 				int save = is[pos1];
 				is[pos1] = is[pos2];
 				is[pos2] = save;
 			}
-			
+
 
 		}
 		randomSolutions = newRandomSolution;
 	}
+	
+	
 
 }

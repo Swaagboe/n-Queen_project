@@ -1,6 +1,5 @@
 package nQueen;
 
-import java.util.Arrays;
 
 public class Utility {
 	
@@ -8,8 +7,8 @@ public class Utility {
 	
 	public Utility(String input){
 		init(input);
-		System.out.println(board.toString());
-		System.out.println(Arrays.toString(board.getQueenPosition()));
+//		System.out.println(board.toString());
+//		System.out.println(Arrays.toString(board.getQueenPosition()));
 //		System.out.println(Arrays.toString(HelpMethods.countRowConflicts(board)));
 //		System.out.println(Arrays.toString(HelpMethods.countDiagonalConflicts(board)));
 //		System.out.println(Arrays.toString(HelpMethods.countConflicts(board)));
@@ -38,16 +37,17 @@ public class Utility {
 	
 	public void run(){
 		long startTime = System.nanoTime();
-		new TabuSearch(board);
+		new GeneticAlgorithm(board, 92);
 		long endTime = System.nanoTime();
 		long duration = (long) ((endTime - startTime)/(Math.pow(10, 9)));
-		System.out.println("Time to find solution on " + board.getSize() +"x" +board.getSize()+ ": " + duration + " sec");
+		System.out.println("Time: " + duration + " sec");
 		
 		
 	}
 	
 	public static void main(String[] args) {
-		new Utility("0 0 0 0");
+		//new Utility("17 29 22 6 12 28 21 3 24 10 9 5 2 15 8 14 26 23 7 19 27 25 1 16 11 30 18 4 13 20");
+		new Utility("1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20");
 	}
 
 }
