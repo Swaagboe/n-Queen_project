@@ -121,6 +121,11 @@ public class HelpMethods {
 		for(int i = 0 ; i < indexedConflicts.length ; i++) {
 			indexedConflicts[i] -= 1 ;
 		}
+		for (int i = 0; i < indexedConflicts.length; i++) {
+			if (indexedConflicts[i] == -1){
+				indexedConflicts[i] = 0;
+			}
+		}
 
 		return indexedConflicts;
 
@@ -298,6 +303,12 @@ public class HelpMethods {
 		else if (size == 17){return 95815104;}
 		else {return 666090624;}
 	}
+	
+//	public static int[] doCrossover(int[] parent1, int[] parent2){
+//		Random random = new Random();
+//		int split = random.nextInt(parent1.length);
+//		
+//	}
 
 
 }
