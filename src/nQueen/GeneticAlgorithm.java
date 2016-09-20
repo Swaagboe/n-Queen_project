@@ -30,7 +30,7 @@ public class GeneticAlgorithm {
 		int iterations = 0;
 		long startTime = System.nanoTime();
 		long duration = 1;
-		while (solutions.size() < HelpMethods.getNumberOfSolutions(size) && duration <10) {
+		while (solutions.size() < HelpMethods.getNumberOfSolutions(size) && duration <200) {
 			for (int[] sol : randomSolutions) {
 				Board b = new Board(sol);
 				if (b.checkIfLegal()){
@@ -107,7 +107,11 @@ public class GeneticAlgorithm {
 			for (int i = 0; i < ranking.size()/2; i++) {
 				newRandomSolution.add(ranking.get(i));
 				newRandomSolution.add(ranking.get(ranking.size()-1));
-			}			
+			}	
+		}
+		for (int i = 0; i < 25; i++) {
+			newRandomSolution.add(ranking.get(i/2));
+
 		}
 		doCrossover(newRandomSolution);
 	}

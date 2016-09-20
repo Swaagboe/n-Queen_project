@@ -47,6 +47,7 @@ public class Board {
 	
 	public void buildPossibleNumbers(){
 		possibleNumbers = new ArrayList<Integer>();
+//		System.out.println(Arrays.toString(queenPositions));
 		for (int i = 0; i < size; i++) {
 			boolean add = false;
 			for (int j = 0; j < size; j++) {
@@ -54,12 +55,28 @@ public class Board {
 					add = true;
 					break;
 				}
-				
 			}
 			if (!add){
 				possibleNumbers.add(i+1);
 			}
 		}
+//		System.out.println("poss"+possibleNumbers);
+		int column = 0;
+		for (int i = 0; i < queenPositions.length; i++) {
+			if(queenPositions[i]!=0)
+				column++;
+		}
+		ArrayList<Integer> newPossibleNumbers = new ArrayList<Integer>();
+		for (int i = 0; i < possibleNumbers.size(); i++) {
+			if(checkDiagonally(true, possibleNumbers.get(i)-1, column)){
+				newPossibleNumbers.add(possibleNumbers.get(i));
+			}
+		}
+		possibleNumbers = newPossibleNumbers;
+	}
+	
+	public void updatePossibleNumbers(){
+		
 	}
 	
 	public ArrayList<Integer> getPossibleNumbers(){
@@ -244,7 +261,7 @@ public class Board {
 		return true;
 	}
 	
-	private boolean checkDiagonally(boolean r, int row, int col){
+	public boolean checkDiagonally(boolean r, int row, int col){
 
 		for (int i = 1; i+row < board.length && i+col < board.length; i++) {
 			if (board[row+i][col+i]){

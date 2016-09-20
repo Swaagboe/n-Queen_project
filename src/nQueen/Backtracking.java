@@ -60,8 +60,8 @@ public class Backtracking {
 							board.removePossibleNumbers(k);							
 						}
 					}
-					System.out.println("SUCCESS");
-					System.out.println(board);
+//					System.out.println("SUCCESS");
+//					System.out.println(board);
 					Board newBoard = new Board(board.getQueenPosition());
 					backtrack(newBoard);
 					breakIt = true;
@@ -72,8 +72,8 @@ public class Backtracking {
 					queenPos = board.getQueenPosition();
 				}
 				else{
-					System.out.println("FAIL");
-					System.out.println(board);
+//					System.out.println("FAIL");
+//					System.out.println(board);
 					ruter[j][i]=(false);
 				}
 			}

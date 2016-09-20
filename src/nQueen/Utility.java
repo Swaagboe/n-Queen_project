@@ -24,6 +24,7 @@ public class Utility {
 			queensPosition[i] = Integer.parseInt(queenPosString[i]);
 		}
 		this.board = new Board(queensPosition);
+		System.out.println(board);
 //		if (!board.checkIfLegal()){
 //			System.out.println(board.toString());
 //			System.out.println("This input is not valid!");
@@ -47,7 +48,7 @@ public class Utility {
 	
 	public static void main(String[] args) {
 		//new Utility("17 29 22 6 12 28 21 3 24 10 9 5 2 15 8 14 26 23 7 19 27 25 1 16 11 30 18 4 13 20");
-		new Utility("2 4 0 0 0 0");
+		new Utility("2 4 6 8 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0");
 	}
 
 }
