@@ -61,7 +61,7 @@ public class SimulatedAnnealing {
 	}
 
 	public ArrayList<int[]> run() {
-		while(temperature > 0 && finalSolutions.size() != HelpMethods.getNumberOfSolutions(currentSolution.getSize())){
+		while(temperature > 0 && 1000 > finalSolutions.size()){
 
 			temperature= temperature - this.dT;
 			buildConflictsBySwap(currentSolution.getQueenPositions());
@@ -70,10 +70,10 @@ public class SimulatedAnnealing {
 
 			if(currentSolution.getCurrentHeuristicValue() == 0){
 				finalSolutions = HelpMethods.addIfNotAlreadyInSolutionSet(currentSolution.getQueenPositions(), finalSolutions);
-//				ArrayList<int[]> rotationSol = HelpMethods.findDuplicateSolutions(currentSolution.getQueenPositions());
-//				for (int[] is : rotationSol) {
-////					finalSolutions = HelpMethods.addIfNotAlreadyInSolutionSet(is, finalSolutions);
-//				}
+				ArrayList<int[]> rotationSol = HelpMethods.findDuplicateSolutions(currentSolution.getQueenPositions());
+				for (int[] is : rotationSol) {
+					finalSolutions = HelpMethods.addIfNotAlreadyInSolutionSet(is, finalSolutions);
+				}
 				currentSolution = new Board(HelpMethods.initializeBoardWithoutRowConflicts(bestSolution.getSize()));
 			}
 
@@ -97,12 +97,7 @@ public class SimulatedAnnealing {
 		}
 		else {
 			if(propability(newSolution) > (random.nextInt(1000))/1000) {
-
-				if (propability(newSolution) == 1){
-					this.currentSolution = new Board(HelpMethods.switchTwoQueensAtRandom(currentSolution.getQueenPositions()));					
-				}else{
 				this.currentSolution = newSolution;
-				}
 			}
 
 			else{
@@ -127,10 +122,12 @@ public class SimulatedAnnealing {
 				tempPos[i] = tempPos[j];
 				tempPos[j] = valueToChange;
 
-				if (conflictsBySwap[i][j] < best){
-					best = conflictsBySwap[i][j];
-					ret[0] = i;
-					ret[1] = j;
+				if (conflictsBySwap[i][j] <= best){
+						if(random.nextInt(100) > 50){
+						best = conflictsBySwap[i][j];
+						ret[0] = i;
+						ret[1] = j;
+					}
 				}
 			}
 		}
@@ -138,6 +135,10 @@ public class SimulatedAnnealing {
 	}
 
 	public double propability(Board board) {
+		if((HelpMethods.simpleHeuristic(board) == currentSolution.getCurrentHeuristicValue())){
+			return random.nextDouble();
+		}
+		
 		double q = ((HelpMethods.simpleHeuristic(board) - currentSolution.getCurrentHeuristicValue())/currentSolution.getCurrentHeuristicValue());
 
 		return Math.min(1,Math.exp(-q/temperature));
@@ -157,24 +158,23 @@ public class SimulatedAnnealing {
 	}
 
 	public static void main(String[] args) {
-		int[] brett = new int[30];
-		for(int i = 0 ; i < 30 ; i++) {
-			brett[i] = i+1;
-		}
-
-
-		SimulatedAnnealing test = new SimulatedAnnealing(1000, 0.1, new Board(brett), 10);
-		long startTime = System.nanoTime();
-		ArrayList<int[]> l¿sning = test.run();
-		for(int i = 0 ; i<2 ; i++) {
-			System.out.println(Arrays.toString(l¿sning.get(i)));
-		}
-		long endTime = System.nanoTime();
-		long duration = (long) ((endTime - startTime)/(Math.pow(10, 9)));
+		for(int i = 0 ; i < 800; i+=50){
+			
+			int[] brett = new int[30];
+			for(int j = 0 ; j < 30; j++) {
+				brett[j] = j+1;
+			}
+			SimulatedAnnealing test = new SimulatedAnnealing(i+750, 0.1, new Board(brett), 10);
+			long startTime = System.nanoTime();
+			ArrayList<int[]> l¿sning = test.run();
+	
+			long endTime = System.nanoTime();
+			long duration = (long) ((endTime - startTime)/(Math.pow(10, 6)));
 
 
 		
-		System.out.println("Time to find " + l¿sning.size() + "solutions " + duration + " sec");
+		System.out.println("Time to find " + l¿sning.size() + "solutions " + duration + " millisec\n Intitial temp: " + (i+750) + "\n\n");
+	}
 	}
 }
 
