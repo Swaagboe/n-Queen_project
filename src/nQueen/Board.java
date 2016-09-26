@@ -1,8 +1,6 @@
 package nQueen;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
 
 
 public class Board {
@@ -45,9 +43,11 @@ public class Board {
 		currentHeuristicValue = HelpMethods.simpleHeuristic(this);
 	}
 	
+	/*creates a list of numbers which indicates possible 
+	row numbers that is legal for the next column that should be filled up in backtracking*/
 	public void buildPossibleNumbers(){
 		possibleNumbers = new ArrayList<Integer>();
-//		System.out.println(Arrays.toString(queenPositions));
+		queenPositions = getQueenPosition();
 		for (int i = 0; i < size; i++) {
 			boolean add = false;
 			for (int j = 0; j < size; j++) {
@@ -60,7 +60,6 @@ public class Board {
 				possibleNumbers.add(i+1);
 			}
 		}
-//		System.out.println("poss"+possibleNumbers);
 		int column = 0;
 		for (int i = 0; i < queenPositions.length; i++) {
 			if(queenPositions[i]!=0)
@@ -72,11 +71,7 @@ public class Board {
 				newPossibleNumbers.add(possibleNumbers.get(i));
 			}
 		}
-		possibleNumbers = newPossibleNumbers;
-	}
-	
-	public void updatePossibleNumbers(){
-		
+		this.possibleNumbers = newPossibleNumbers;
 	}
 	
 	public ArrayList<Integer> getPossibleNumbers(){
@@ -87,14 +82,16 @@ public class Board {
 		possibleNumbers.remove(i);
 	}
 	
-	public int[] getConflicts() {
-		return this.conflicts;
-	}
+	//Denne kan vell fjernes?
+//	public int[] getConflicts() {
+//		return this.conflicts;
+//	}
 	
 	public int[] getQueenPositions(){
 		return queenPositions;
 	}
 	
+	//returns the array with the queenpositions
 	public int[] getQueenPosition() {
 		int[] ret = new int[size];
 		for (int i = 0; i < ret.length; i++) {
@@ -104,6 +101,7 @@ public class Board {
 				}
 			}
 		}
+		this.queenPositions = ret.clone();
 		return ret;
 	}
 
@@ -115,6 +113,7 @@ public class Board {
 		return size;
 	}
 	
+	//checks if the board has a queen in each column
 	public boolean isFilledUp(){
 		int[] queenPos = this.getQueenPosition();
 		int c = 0;
@@ -131,52 +130,52 @@ public class Board {
 		}
 	}
 	
-	public void moveQueen(int row, int column) {
-
-		
-
-		int rowIndex = this.getSize() - this.queenPositions[column];
-		this.board[rowIndex][column] = false;
-		this.board[row][column] = true;
-		this.queenPositions[column] = this.getSize() - row;
-		conflicts[rowIndex] -=1;
-		conflicts[row] += 1;
-		
-		int index = rowIndex + column;
-		
-		if(index!=0 && index !=this.getSize() && index != this.getSize()*2 ){
-			int offset = (this.getSize()*2-3) +  this.getSize();
-			int columnIndex = this.getSize() -column - 1;
-			
-			int diagonalOneIndex = rowIndex + column- 1 + this.getSize();
-			int diagonalTwoIndex = offset + rowIndex + columnIndex - 1;
-
-
-			conflicts[diagonalOneIndex] -=1;
-			conflicts[diagonalTwoIndex] -=1;
-		}
-		
-		index = row + column;
-		
-		if(index!=0 && index !=this.getSize() && index != this.getSize()*2 ){
-			int offset = (this.getSize()*2-3) +  this.getSize();
-			int columnIndex = this.getSize() -column - 1;
-			
-			int diagonalOneIndex = row + column -1 + this.getSize();
-			int diagonalTwoIndex = offset + columnIndex + row - 1;
-			conflicts[diagonalOneIndex] +=1;
-			conflicts[diagonalTwoIndex] +=1;
-		}
-		
-		this.currentHeuristicValue = HelpMethods.simpleHeuristic(this);
-		
-
-	}
 	
-	public void removeQueen(int row, int column) {
-		this.board[row][column] = false;
-		this.queenPositions[column] = 0;
-	}
+	//DENNE KAN VELL FJERNES?
+//	public void moveQueen(int row, int column) {
+//		int rowIndex = this.getSize() - this.queenPositions[column];
+//		this.board[rowIndex][column] = false;
+//		this.board[row][column] = true;
+//		this.queenPositions[column] = this.getSize() - row;
+//		conflicts[rowIndex] -=1;
+//		conflicts[row] += 1;
+//		
+//		int index = rowIndex + column;
+//		
+//		if(index!=0 && index !=this.getSize() && index != this.getSize()*2 ){
+//			int offset = (this.getSize()*2-3) +  this.getSize();
+//			int columnIndex = this.getSize() -column - 1;
+//			
+//			int diagonalOneIndex = rowIndex + column- 1 + this.getSize();
+//			int diagonalTwoIndex = offset + rowIndex + columnIndex - 1;
+//
+//
+//			conflicts[diagonalOneIndex] -=1;
+//			conflicts[diagonalTwoIndex] -=1;
+//		}
+//		
+//		index = row + column;
+//		
+//		if(index!=0 && index !=this.getSize() && index != this.getSize()*2 ){
+//			int offset = (this.getSize()*2-3) +  this.getSize();
+//			int columnIndex = this.getSize() -column - 1;
+//			
+//			int diagonalOneIndex = row + column -1 + this.getSize();
+//			int diagonalTwoIndex = offset + columnIndex + row - 1;
+//			conflicts[diagonalOneIndex] +=1;
+//			conflicts[diagonalTwoIndex] +=1;
+//		}
+//		
+//		this.currentHeuristicValue = HelpMethods.simpleHeuristic(this);
+//		
+//
+//	}
+	
+	//Samme med denne?
+//	public void removeQueen(int row, int column) {
+//		this.board[row][column] = false;
+//		this.queenPositions[column] = 0;
+//	}
 
 	public void updateConflicts() {
 		this.conflicts = HelpMethods.countConflicts(this);
@@ -186,6 +185,7 @@ public class Board {
 		this.currentHeuristicValue = HelpMethods.simpleHeuristic(this);
 	}
 	
+	//Prints the board 
 	public String toString(){
 		String s = "  ";
 		String letter = "a";
@@ -229,6 +229,7 @@ public class Board {
 		return s;
 	}
 	
+	//check if the board has legal positions aka no conflicts
 	public boolean checkIfLegal(){
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board.length; j++) {

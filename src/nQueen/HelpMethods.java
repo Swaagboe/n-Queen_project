@@ -286,6 +286,33 @@ public class HelpMethods {
 		return solutions;
 	}
 	
+	//Modify the board to have no row conflicts
+	public static int[] modifyInitialSolutionIfRowConflicts(int[] initialSolution){
+		int size = initialSolution.length;
+		int [] ret = new int[size];
+		ArrayList<Integer> rowDuplicates = new ArrayList<Integer>();
+		ArrayList<Integer> missingNumbers = new ArrayList<Integer>();
+		for (int i = 0; i < ret.length; i++) {
+			missingNumbers.add(i+1);
+		}
+		for (int i = 0; i < size; i++) {
+			if (missingNumbers.contains(ret[i])){
+				missingNumbers.remove((Integer) ret[i]);
+			}
+			else{
+				rowDuplicates.add(ret[i]);
+			}
+		}
+		int c = 0;
+		for (int i = 0; i < ret.length; i++) {
+			if (ret[i] == rowDuplicates.get(c)){
+				ret[i] = missingNumbers.get(c);
+				c++;
+			}
+		}
+		return ret;
+	}
+	
 	public static Integer getNumberOfSolutions(int size){
 		if (size == 4){return 2;}
 		else if (size == 5){return 10;}

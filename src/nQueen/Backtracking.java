@@ -6,74 +6,67 @@ import java.util.Arrays;
 public class Backtracking {
 	
 	private ArrayList<int[]> solutions;
-	private ArrayList<Integer> possibleNumber;
 	private int size;
+	private boolean stepByStep;
 	
-	public Backtracking(Board board){
+	public Backtracking(Board board, boolean stepByStep){
 		solutions = new ArrayList<int[]>();
 		size = board.getSize();
-//		buildPossibleNumbers(board);
-//		System.out.println(possibleNumber);
+		this.stepByStep = stepByStep;
+		if (stepByStep){
+			ArrayList<Integer> possNumber = new ArrayList<Integer>();
+			for (Integer integer : board.getPossibleNumbers()) {
+				possNumber.add(size+1-integer);
+			}
+			System.out.println("Current board: "+Arrays.toString(board.getQueenPosition())
+					+"\t Numbers available: " + possNumber);				
+		}
 		backtrack(board);
+		if (stepByStep){
+			System.out.println();
+		}
 		printSolutions();
-		//printSolutionsBoard();
+		System.out.println("Number of solutions for " + solutions.get(0).length+"x"+solutions.get(0).length+": "+  + solutions.size());
 	}
-//	
-//	public void buildPossibleNumbers(Board board){
-//		possibleNumber = new ArrayList<Integer>();
-//		boolean[][] ruter = board.getBoard();
-//		for (int i = 0; i < size; i++) {
-//			boolean add = false;
-//			for (int j = 0; j < size; j++) {
-//				if (ruter[i][j]){
-//					add = true;
-//					break;
-//				}
-//			}
-//			if (!add){
-//				possibleNumber.add(i+1);
-//			}
-//		}
-//	}
 	
 	public Board backtrack(Board board){
-		int[] queenPos = board.getQueenPosition();
+		int[] queenPos = board.getQueenPositions();
 		boolean breakIt = false;
-		for (int i = 0; i < queenPos.length; i++) {
+		for (int i = 0; i < size; i++) {
 			if (queenPos[i] != 0){
 				continue;
 			}
 			boolean[][] ruter = board.getBoard();
-			for (int j = 0; j < queenPos.length; j++) {
-				int c = j+1;
-//				System.out.println("j: " + c);
-//				System.out.println("Possiblenumbers: " + board.getPossibleNumbers());
+			for (int j = 0; j < size; j++) {
 				if (!board.getPossibleNumbers().contains(j+1)){
-//					System.out.println("here");
 					continue;
 				}
 				ruter[j][i] = (true);
+				if (stepByStep){
+					ArrayList<Integer> possNumber = new ArrayList<Integer>();
+					board.buildPossibleNumbers();
+					for (Integer integer : board.getPossibleNumbers()) {
+						possNumber.add(size+1-integer);
+					}
+					System.out.println("Current board: "+Arrays.toString(board.getQueenPosition())
+							+"\t Numbers available: " + possNumber);				
+				}
 				if (board.checkIfLegal()){
 					for (int k = 0; k < board.getPossibleNumbers().size(); k++) {
 						if (board.getPossibleNumbers().get(k) == j+1){
-//							System.out.println("REMOVE");
 							board.removePossibleNumbers(k);							
 						}
 					}
-//					System.out.println("SUCCESS");
-//					System.out.println(board);
 					Board newBoard = new Board(board.getQueenPosition());
 					backtrack(newBoard);
 					breakIt = true;
 					if (board.isFilledUp()){
-						solutions.add(board.getQueenPosition());
+						solutions.add(board.getQueenPositions());
 					}
 					ruter[j][i]=(false);
 					queenPos = board.getQueenPosition();
 				}
 				else{
-//					System.out.println("FAIL");
-//					System.out.println(board);
 					ruter[j][i]=(false);
 				}
 			}
@@ -89,7 +82,6 @@ public class Backtracking {
 		for (int i = 0; i < solutions.size(); i++) {
 			System.out.println(Arrays.toString(solutions.get(i)));
 		}
-		System.out.println("Number of solutions for " + solutions.get(0).length+"x"+solutions.get(0).length+": "+  + solutions.size());
 	}
 	
 	public void printSolutionsBoard(){
@@ -99,6 +91,44 @@ public class Backtracking {
 		}
 	}
 	
+	public static Board init(String input){
+		String[] queenPosString = input.split(" ");
+		int[] queensPosition = new int[queenPosString.length];
+		for (int i = 0; i < queenPosString.length; i++) {
+			queensPosition[i] = Integer.parseInt(queenPosString[i]);
+		}
+		Board board = new Board(queensPosition);
+		if (!board.checkIfLegal()){
+			System.out.println("This input is not valid!");
+			System.exit(2);
+		}
+		else{
+		}
+		return board;
+	}
+	
+	public static void main(String[] args) {
+		long startTime = System.nanoTime();
+		if (args.length == 0){
+			String input = "1 3 5 7 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
+			Board b = Backtracking.init(input);
+			new Backtracking(b, false);					
+		}
+		else if (args[1].equals("true")){
+			System.out.println("Step by step:");
+			String input = args[0];
+			Board b = Backtracking.init(input);
+			new Backtracking(b, true);					
+		}
+		else{
+			String input = args[0];
+			Board b = Backtracking.init(input);
+			new Backtracking(b, false);								
+		}
+		long endTime = System.nanoTime();
+		long duration = (long) ((endTime - startTime)/(Math.pow(10, 6)));
+		System.out.println("Time: " + (double)duration/1000 + " sec");
+	}
 	
 
 }

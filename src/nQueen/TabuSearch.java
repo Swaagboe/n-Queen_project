@@ -13,16 +13,34 @@ public class TabuSearch {
 	private int maxTabuSize = 1000;
 	private Queue<int[]> tabuList;
 	private int[][] conflictsBySwap;
+	private boolean stepByStep;
 
-	public TabuSearch(Board b){
+	public TabuSearch(Board b, boolean stepByStep){
+		this.stepByStep = stepByStep;
 		solutions = new ArrayList<int[]>();
 		this.size = b.getSize();
 		tabuList = new LinkedList<int[]>();
 		int numberOfSolutions = HelpMethods.getNumberOfSolutions(size);
-		int[] initialSolution = HelpMethods.initializeBoardWithoutRowConflicts(size);
-		initialSolution = b.getQueenPositions();
-		System.out.println(Arrays.toString(initialSolution));
-		initialiseConflictsBySwap();
+		int[] initialSolution = b.getQueenPositions();
+		if (stepByStep){
+			System.out.println("Initial solution:");
+			System.out.println(Arrays.toString(initialSolution));
+		}
+		initialSolution = HelpMethods.modifyInitialSolutionIfRowConflicts(initialSolution.clone());
+		if (stepByStep){
+			System.out.println("Modifying input to no row conflicts:");
+			System.out.println(Arrays.toString(initialSolution));
+			System.out.println();
+		}
+		tabuList.add(initialSolution);
+		if (stepByStep){
+			System.out.println("Tabu list:");
+			for (int[] sol : tabuList) {
+				System.out.println(Arrays.toString(sol));
+			}
+			System.out.println();
+		}
+		conflictsBySwap = new int[size][size];
 		buildConflictsBySwap(initialSolution);
 		int[] oldSol = swap(initialSolution);
 		Board board = new Board(oldSol);
@@ -36,7 +54,14 @@ public class TabuSearch {
 		int c = 0;
 		long startTime = System.nanoTime();
 		long duration = 1;
-		while (solutions.size()<numberOfSolutions && duration < 10){
+		while (solutions.size()<1000 && duration < 10){
+			if (stepByStep){
+				System.out.println("Tabu list:");
+				for (int[] sol : tabuList) {
+					System.out.println(Arrays.toString(sol));
+				}
+				System.out.println();
+			}
 			buildConflictsBySwap(oldSol);
 			int[] newSolution = swap(oldSol);							
 			board = new Board(newSolution);
@@ -54,7 +79,6 @@ public class TabuSearch {
 			long endTime = System.nanoTime();
 			duration = (long) ((endTime - startTime)/(Math.pow(10, 9)));
 		}
-		System.out.println(board.toString());
 		System.out.println("SOLUTIONS:");
 		for (int[] is : solutions) {
 			System.out.println(Arrays.toString(is));
@@ -64,15 +88,6 @@ public class TabuSearch {
 
 	}
 
-	//initialiserer konfliktmatrisen for naboene
-	public void initialiseConflictsBySwap(){
-		conflictsBySwap = new int[size][size];
-		for (int i = 0; i < size; i++) {
-			for (int j = i+1; j < size; j++) {
-				conflictsBySwap[i][j] = -1;
-			}
-		}
-	}
 
 	//finner antall konflikter ved aa foreta et dronningbytte med plass i og j
 	public void buildConflictsBySwap(int[] queenPos){
@@ -108,6 +123,9 @@ public class TabuSearch {
 
 	//finner de beste dronningene aa bytte. De som gir fearrrest konflikter. 
 	public int[] findBestSwap(int[] queenPos){
+		if (stepByStep){
+			System.out.println("Neighbours: ");
+		}
 		int[] ret = new int[2];
 		ret[0] = -1;
 		int best = INF;
@@ -118,6 +136,9 @@ public class TabuSearch {
 				tempPos[i] = tempPos[j];
 				tempPos[j] = valueToChange;
 				boolean check = false;
+				if (stepByStep){
+					System.out.println(Arrays.toString(tempPos));
+				}
 				for (int[] k : tabuList) {
 					if (HelpMethods.compareArrays(k, tempPos)){
 						check = true;
@@ -131,7 +152,42 @@ public class TabuSearch {
 				}
 			}
 		}
+		if (stepByStep){
+			System.out.println();			
+		}
 		return ret;
+	}
+	
+	public static Board init(String input){
+		String[] queenPosString = input.split(" ");
+		int[] queensPosition = new int[queenPosString.length];
+		for (int i = 0; i < queenPosString.length; i++) {
+			queensPosition[i] = Integer.parseInt(queenPosString[i]);
+		}
+		return new Board(queensPosition);
+	}
+	
+	public static void main(String[] args) {
+		long startTime = System.nanoTime();
+		if (args.length == 0){
+			String input = "1 2 3 4 6 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30";
+			Board b = TabuSearch.init(input);
+			new TabuSearch(b, false);					
+		}
+		else if (args[1].equals("true")){
+			System.out.println("Step by step:");
+			String input = args[0];
+			Board b = TabuSearch.init(input);
+			new TabuSearch(b, true);						
+		}
+		else{
+			String input = args[0];
+			Board b = TabuSearch.init(input);
+			new TabuSearch(b, false);								
+		}
+		long endTime = System.nanoTime();
+		long duration = (long) ((endTime - startTime)/(Math.pow(10, 6)));
+		System.out.println("Time: " + (double)duration/1000 + " sec");
 	}
 
 }
