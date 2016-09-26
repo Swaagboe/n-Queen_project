@@ -94,6 +94,7 @@ public class SimulatedAnnealing {
 		double currentSolutionHeuristic = currentSolution.getCurrentHeuristicValue();
 		if (newSolution.getCurrentHeuristicValue() < currentSolutionHeuristic){
 			this.currentSolution = newSolution;
+			System.out.println("hei");
 		}
 		else {
 			if(propability(newSolution) > (random.nextInt(1000))/1000) {
@@ -123,7 +124,7 @@ public class SimulatedAnnealing {
 				tempPos[j] = valueToChange;
 
 				if (conflictsBySwap[i][j] <= best){
-						if(random.nextInt(100) > 50){
+					if(random.nextInt(100) > 50){
 						best = conflictsBySwap[i][j];
 						ret[0] = i;
 						ret[1] = j;
@@ -138,7 +139,7 @@ public class SimulatedAnnealing {
 		if((HelpMethods.simpleHeuristic(board) == currentSolution.getCurrentHeuristicValue())){
 			return random.nextDouble();
 		}
-		
+
 		double q = ((HelpMethods.simpleHeuristic(board) - currentSolution.getCurrentHeuristicValue())/currentSolution.getCurrentHeuristicValue());
 
 		return Math.min(1,Math.exp(-q/temperature));
@@ -159,22 +160,20 @@ public class SimulatedAnnealing {
 
 	public static void main(String[] args) {
 		for(int i = 0 ; i < 800; i+=50){
-			
+
 			int[] brett = new int[30];
 			for(int j = 0 ; j < 30; j++) {
 				brett[j] = j+1;
 			}
 			SimulatedAnnealing test = new SimulatedAnnealing(i+750, 0.1, new Board(brett), 10);
 			long startTime = System.nanoTime();
-			ArrayList<int[]> l¿sning = test.run();
-	
+			ArrayList<int[]> losning = test.run();
+
 			long endTime = System.nanoTime();
 			long duration = (long) ((endTime - startTime)/(Math.pow(10, 6)));
 
-
-		
-		System.out.println("Time to find " + l¿sning.size() + "solutions " + duration + " millisec\n Intitial temp: " + (i+750) + "\n\n");
-	}
+			System.out.println("Time to find " + losning.size() + "solutions " + duration + " millisec\n Intitial temp: " + (i+750) + "\n\n");
+		}
 	}
 }
 
