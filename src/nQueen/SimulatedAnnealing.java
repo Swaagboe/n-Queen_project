@@ -94,7 +94,6 @@ public class SimulatedAnnealing {
 		double currentSolutionHeuristic = currentSolution.getCurrentHeuristicValue();
 		if (newSolution.getCurrentHeuristicValue() < currentSolutionHeuristic){
 			this.currentSolution = newSolution;
-			System.out.println("hei");
 		}
 		else {
 			if(propability(newSolution) > (random.nextInt(1000))/1000) {
@@ -176,4 +175,3 @@ public class SimulatedAnnealing {
 		}
 	}
 }
-

@@ -82,10 +82,9 @@ public class Board {
 		possibleNumbers.remove(i);
 	}
 	
-	//Denne kan vell fjernes?
-//	public int[] getConflicts() {
-//		return this.conflicts;
-//	}
+	public int[] getConflicts() {
+		return this.conflicts;
+	}
 	
 	public int[] getQueenPositions(){
 		return queenPositions;
